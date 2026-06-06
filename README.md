@@ -1,72 +1,69 @@
-# untitled2
+# Hi there , I'm Shahd Sayed
 
-A new Flutter project.
+ Flutter Developer | Mobile App Developer  
+ Building modern, scalable mobile applications  
+ Clean Architecture | Cubit/BLoC | REST API Integration
 
-# files structure
+---
 
-lib/
-core/
-constants/
-api_endpoints.dart
-api_colors dart
-api_strings dart
+##  About Me
 
-network/
-api_servios.dart
-api_exceptions.dart
+I am a Flutter Developer passionate about building clean, scalable, and user-friendly mobile applications.
 
-utils/
-helpers.dart
-validators dart
+I enjoy turning ideas into real-world products using modern development practices, clean code principles, and strong UI/UX design.
 
-features/
+I specialize in:
+- Flutter App Development
+- State Management (Cubit / Bloc)
+- REST API Integration
+- Clean Architecture
 
-food/
+I am currently seeking opportunities as a Junior Flutter Developer where I can contribute to real-world projects and continue growing my technical skills.
 
-data/
-food_model.dart
-food_repository.dart
+---
 
-view/
-food_list_page.dart
-food_detail_page.dart
+##  Tech Stack
 
-cubit/
+- Flutter
+- Dart
+- Cubit / Bloc
+- REST API
+- Dio
+- Firebase
+- Shared Preferences
+- Git & GitHub
+- Clean Architecture
 
-widgets/
-food_card.dart
+---
 
+##  Featured Projects
 
-// الجديد
-core/
-├── network/
-│    ├── dio_client.dart
-│    ├── api_services.dart
-│
-├── cache/
-│    └── cache_helper.dart
+###  Hungry App (Food Delivery App)
+A modern food delivery application built with Flutter, featuring authentication, cart system, checkout flow, and clean architecture.
 
-features/auth/
-├── data/
-│    └── auth_repository.dart
-│
-├── cubit/
-│    ├── auth_cubit.dart
-│    └── auth_state.dart
+🔗 GitHub: https://github.com/shahdsayed11204-spec/food-delivery-app
 
+---
 
-main.dart
+###  More Projects Coming Soon
+I am currently working on building more Flutter applications to strengthen my portfolio, including UI practice apps and advanced state management projects.
 
-## Getting Started
+##  GitHub Stats
 
-This project is a starting point for a Flutter application.
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=shahdsayed11204-spec&show_icons=true&theme=default)
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+##  Contact Me
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
- 
+- GitHub: https://github.com/shahdsayed11204-spec
+- LinkedIn: https://www.linkedin.com/in/shahd-sayed-0b006a351/
+- Email: shahdsayed11204@gmail.com
+
+---
+
+##  Goals
+
+- Build production-ready Flutter applications
+- Join a Junior Flutter Developer position
+- Improve system design and architecture skills  
