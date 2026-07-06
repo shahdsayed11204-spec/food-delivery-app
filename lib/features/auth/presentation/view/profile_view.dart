@@ -175,7 +175,7 @@ class _ProfileViewState extends State<ProfileView> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: RefreshIndicator(
               color: Colors.white,
-              backgroundColor: AppColors.primaryColor,
+              backgroundColor: Colors.grey.shade400,
               onRefresh: getProfileData,
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(
@@ -406,7 +406,7 @@ class _ProfileViewState extends State<ProfileView> {
                         gap: 10,
                         text: 'Edit Profile',
                         textColor: Colors.white,
-                        color: isLoading ? Colors.blueGrey.shade300 : AppColors.primaryColor,
+                        color: isLoading ? Color(0xff476a47) : AppColors.primaryColor,
                       ),
                     ),
                   ),
@@ -424,7 +424,8 @@ class _ProfileViewState extends State<ProfileView> {
           ),
         ),
       );
-    }else {
+    }
+    else {
       return Scaffold(
         body: Center(
           child: Padding(
@@ -495,19 +496,6 @@ class _ProfileViewState extends State<ProfileView> {
           ),
         ),
       );
-     // return Center(
-     //  child: Column(
-     //    crossAxisAlignment: CrossAxisAlignment.center,
-     //    mainAxisAlignment: MainAxisAlignment.center,
-     //    children: [
-     //      CustomText(text: 'Is a Guest',color: AppColors.primaryColor),
-     //      Gap(10),
-     //      CustomButton(text: 'Create an Account ',onTap:  () {
-     //        navigatorReplace(context, LoginView(),);
-     //      },radius: 18,width: 230,height: 50,),
-     //    ],
-     //  ),
-     //  );
     }
   }
 }

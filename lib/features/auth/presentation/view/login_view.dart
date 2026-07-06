@@ -12,11 +12,9 @@ import '../../../../shared/custom_text/custom_bottom.dart';
 import '../../../../shared/custom_text/custom_snackbar.dart';
 import '../../../../shared/custom_text/custom_textformfiled.dart';
 import '../../../../shared/custom_text/glass_container.dart';
-import '../../../../shared/navigator/navigatorTo.dart';
 import '../../../../shared/navigator/navigator_replace.dart';
 import '../../data/repository/auth_reposi.dart';
 import '../widgets/Custom_auth_btn.dart';
-import '../widgets/custom_bottom.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -26,7 +24,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final email = TextEditingController(text: "shahd@gmail.com");
+  final email = TextEditingController(text: "ahd@gmail.com");
   final password = TextEditingController(text: '123456789');
   final formkey = GlobalKey<FormState>();
 

@@ -121,7 +121,7 @@ class AuthRepo {
   }
 
   /// Update Profile data
-  Future<UserModel?> updateProfile({
+  Future<UserModel?> updateProfile  ({
     required String name,
     required String email,
     required String address,
@@ -129,7 +129,7 @@ class AuthRepo {
     String? imagepath,
   }) async {
     try {
-      final formData = FormData.fromMap({
+      final formData = FormData.fromMap(  {
         'name': name,
         'email': email,
         'address': address,
@@ -212,6 +212,7 @@ Future<void> asGusset()async{
     await PrefHelper.saveToken('guest');
 
 }
+
 
   UserModel? get currentUser => _currentUser;
 

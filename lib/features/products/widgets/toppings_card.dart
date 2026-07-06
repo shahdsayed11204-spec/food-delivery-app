@@ -1,86 +1,67 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import '../../../shared/custom_text/coustom_taxt.dart';
 
-class Toppingcard extends StatelessWidget {
-  final String title;
+class ToppingCard extends StatelessWidget {
   final String imagePath;
-  final VoidCallback? onAdd;
+  final String title;
+  final VoidCallback onAdd;
+  final Color color;
 
-  const Toppingcard({
+  const ToppingCard({
     super.key,
-    required this.title,
     required this.imagePath,
-    this.onAdd,
+    required this.title,
+    required this.onAdd,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        ClipRRect(
+    return GestureDetector(
+      onTap: onAdd,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 100,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        decoration: BoxDecoration(
+          color: color,
           borderRadius: BorderRadius.circular(16),
-          child: Container(
-            height: 100,
-            width: 110,
-            color: const Color(0xff3C2F2F),
-            child: Column(
-              children:  [
-              ],
-            ),
-          ),
         ),
-        Positioned(
-          top: -10,
-          left: -5,
-          right: -5,
-          bottom: 30,
-          child: SizedBox(
-            width: 80,
-            height: 70,
-            child: Card(
-              child: Image.asset(
-                imagePath,
-                height: 60,
-                width: double.infinity,
-                fit: BoxFit.contain,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            imagePath.isNotEmpty && imagePath.startsWith('http')
+                ? CachedNetworkImage(
+              imageUrl: imagePath,
+              fit: BoxFit.contain,
+              height: 55,
+              progressIndicatorBuilder: (context, url, progress) =>
+              const Center(
+                child: CupertinoActivityIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Center(
+                child: Icon(Icons.fastfood, color: Colors.grey, size: 30),
+              ),
+            )
+                : const SizedBox(
+              height: 55,
+              child: Center(
+                child: Icon(Icons.fastfood, color: Colors.grey, size: 30),
               ),
             ),
-          ),
-        ),
-        Positioned(
-          bottom: 10,
-          left: -30,
-          right: 8,
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+            const Gap(10),
+            CustomText(
+              text: title,
+              color: Colors.black87,
+              size: 13,
+              font: FontWeight.w600,
             ),
-          ),
+          ],
         ),
-        Positioned(
-          bottom: 8,
-          right: 8,
-          child: GestureDetector(
-            onTap: onAdd,
-            child: const CircleAvatar(
-              radius: 11,
-              backgroundColor: Colors.red,
-              child: Icon(
-                Icons.add,
-                size: 15,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

@@ -2,16 +2,18 @@ import 'package:Hungry_App/shared/custom_text/coustom_taxt.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+import '../../../core/constants/api_colors.dart';
 import '../../../shared/custom_text/custom_bottom_cart.dart';
 import '../../../shared/navigator/navigatorTo.dart';
 import '../../cart/views/cart_view.dart';
+import '../../home/data/models/toppings_model.dart';
+import '../../home/data/repi/product_repi.dart';
 import '../widgets/slider_spaicy.dart';
 import '../widgets/toppings_card.dart';
 
-
 class ProductsDetails extends StatefulWidget {
-  const ProductsDetails({super.key});
-
+  const ProductsDetails({super.key, required this.imagePath});
+  final String imagePath;
   @override
   State<ProductsDetails> createState() => _ProductsDetailsState();
 }
@@ -19,14 +21,47 @@ class ProductsDetails extends StatefulWidget {
 class _ProductsDetailsState extends State<ProductsDetails> {
   late double value = 0.5;
 
+  int? selectedToppingIndex;
+  int? selectedOptionIndex;
+
+  ProductRepo productRepo = ProductRepo();
+  List<ToppingsModel>? toppings;
+  List<ToppingsModel>? options;
+
+  Future<void> getToppings() async {
+    final response = await productRepo.getToppings();
+    setState(() {
+      toppings = response;
+    });
+  }
+
+  Future<void> getOptions() async {
+    final response = await productRepo.getOptions();
+    setState(() {
+      options = response;
+    });
+  }
+
+  @override
+  void initState() {
+    getToppings();
+    getOptions();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -37,65 +72,89 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                     value = sliderValue;
                   });
                 },
+                imagePath: widget.imagePath,
               ),
-              Gap(25),
-              CustomText(text: 'Toppings', size: 18, font: FontWeight.bold),
-              Gap(25),
+              const Gap(30),
+              CustomText(text: 'Toppings', size: 20, font: FontWeight.bold),
+              const Gap(16),
               SingleChildScrollView(
                 clipBehavior: Clip.none,
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(5, (index) {
+                  children: List.generate(toppings?.length ?? 5, (index) {
+                    final isSelected = selectedToppingIndex == index;
+                    final topping = toppings?[index];
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Toppingcard(
-                        title: 'Tomato',
-                        imagePath: 'assets/test/tomato.png',
-                        onAdd: () {},
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: ToppingCard(
+                        color: isSelected
+                            ? AppColors.primaryColor.withOpacity(0.5)
+                            : AppColors.primaryColor.withOpacity(0.05),
+                        title: topping?.name ?? 'Tomato',
+                        imagePath: topping?.image ?? '',
+                        onAdd: () {
+                          setState(() {
+                            selectedToppingIndex = index;
+                          });
+                        },
                       ),
                     );
                   }),
                 ),
               ),
-              Gap(25),
-              CustomText(text: 'Side options', size: 18, font: FontWeight.bold),
-              Gap(25),
+              const Gap(30),
+              CustomText(text: 'Side options', size: 20, font: FontWeight.bold),
+              const Gap(16),
               SingleChildScrollView(
                 clipBehavior: Clip.none,
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(5, (index) {
+                  children: List.generate(options?.length ?? 5, (index) {
+                    final isSelected = selectedOptionIndex == index;
+                    final option = options?[index];
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Toppingcard(
-                        title: 'Tomato',
-                        imagePath: 'assets/test/tomato.png',
-                        onAdd: () {},
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: ToppingCard(
+                        color: isSelected
+                            ? AppColors.primaryColor.withOpacity(0.5)
+                            : AppColors.primaryColor.withOpacity(0.05),
+                        title: option?.name ?? 'Option',
+                        imagePath: option?.image ?? '',
+                        onAdd: () {
+                          setState(() {
+                            selectedOptionIndex = index;
+                          });
+                        },
                       ),
                     );
                   }),
                 ),
               ),
-              Gap(20),
+              const Gap(80),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomText(text: 'Total', size: 16),
+                      CustomText(text: 'Total', size: 14, color: Colors.grey),
+                      const Gap(4),
                       CustomText(
                         text: '\$18.19',
-                        size: 25,
+                        size: 26,
                         font: FontWeight.bold,
                       ),
                     ],
                   ),
-                  CustomBottomCart(text: 'Add To Cart', onTap: () {
-                    navigatorTo(context, CartView());
-                  }),
+                  CustomBottomCart(
+                    text: 'Add To Cart',
+                    onTap: () {
+                      navigatorTo(context, const CartView());
+                    },
+                  ),
                 ],
               ),
+              const Gap(20),
             ],
           ),
         ),

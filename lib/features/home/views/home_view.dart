@@ -1,7 +1,11 @@
+import 'package:Hungry_App/features/home/data/repi/product_repi.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../products/view/products_details.dart';
+import '../data/models/product_model.dart';
 import '../widgets/cart.dart';
 import '../widgets/categoris.dart';
 import '../widgets/search_home.dart';
@@ -15,58 +19,85 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final List<String> categories = ['All', 'Sliders', 'Combos', 'Classic'];
-
   int selectedIndex = 0;
+   List<ProductModel>? products;
+
+  final ProductRepo productRepo=ProductRepo();
+
+  Future<void> getProducts() async {
+   final response= await productRepo.getProducts();
+   setState(() {
+     products=response;
+   });
+  }
+
+  @override
+  void initState() {
+    getProducts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 11.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Gap(60),
-                   UesrHeader(),
-                    Gap(20),
-                    SearchHome(),
-                    Gap(20),
-                   HomeCategoris(selectedIndex: selectedIndex, categories: categories),
-                    Gap(10),
-                  ],
+      child: Skeletonizer(
+        enabled: products==null,
+        child: Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 11.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Gap(60),
+                     UesrHeader(),
+                      Gap(20),
+                      SearchHome(),
+                      Gap(20),
+                     HomeCategoris(selectedIndex: selectedIndex, categories: categories),
+                      Gap(10),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SliverPadding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 8.0),
-              sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    childCount: 6,
-                        (context,index)=>GestureDetector(
+              SliverPadding(
+                padding: EdgeInsets.only(left: 10, right: 10 ,bottom: 120, top: 20),
+                sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: products?.length,
+                          (context,index) {
+                            if(products==null)
+                            {
+                              return CupertinoActivityIndicator();
+                            }
+                         final product=products![index];
+                        return GestureDetector(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductsDetails()),);
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductsDetails(imagePath: product.image,)),);
                           },
                           child: CardItem(
-                          image: 'assets/test/test.png',
-                          text:  'Cheeseburger',
-                          desc: 'Wendy"s Burger',
-                          rate: '4.9'
-                                              ),
-                        ),
+                            image: product.image,
+                            text: product.name,
+                            desc: '${product.price} EGP',
+                            rate: product.rate.toString(),
+                          )
+                        );
+                          }
+        
+                    ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.65,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
                   ),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    childAspectRatio: 0.72,
-                    mainAxisSpacing: 2,
-                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

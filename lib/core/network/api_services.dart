@@ -7,22 +7,23 @@ class ApiServices {
 
   final DioClient dioClient = DioClient();
 
-  Future<dynamic> get(String endPoint) async {
-    try {
-      final response = await dioClient.dio.get(endPoint);
-      return response.data;
-    } catch (e) {
-      throw "An unexpected error occurred. Please try again";
-    }
-  }
   // Future<dynamic> get(String endPoint) async {
   //   try {
   //     final response = await dioClient.dio.get(endPoint);
   //     return response.data;
-  //   } on DioError catch (error) {
-  //     throw ApiExceptions.handleError(error);
+  //   } catch (e) {
+  //     throw "An unexpected error occurred. Please try again";
   //   }
   // }
+
+  Future<dynamic> get(String endPoint) async {
+    try {
+      final response = await dioClient.dio.get(endPoint);
+      return response.data;
+    } on DioError catch (error) {
+      throw ApiExceptions.handleError(error);
+    }
+  }
 
   Future<dynamic> post(String endPoint, dynamic body) async {
     try {
