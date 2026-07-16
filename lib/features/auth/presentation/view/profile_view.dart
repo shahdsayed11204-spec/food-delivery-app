@@ -139,6 +139,35 @@ class _ProfileViewState extends State<ProfileView> {
       ),
     );
   }
+  Future<void>showLogOutConfirmation()async{
+    showDialog(context: context, builder: ( context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(15)
+        ),
+        title: CustomText(text: 'Log Out',color: Colors.black,font: FontWeight.w600,size: 20,),
+        content: CustomText(text: 'Are you sure you want to log out?',color: Colors.grey.shade600),
+        icon: Icon(
+          Icons.logout_rounded,
+          color: AppColors.primaryColor,
+          size: 20,
+        ),
+        actions: [
+          TextButton(onPressed: ()=> Navigator.pop(context), child: CustomText(text: 'Cansel',color: Colors.grey, font: FontWeight.w600,
+          )),
+          TextButton(onPressed: (){
+            Navigator.pop(context);
+            logOut();
+          } , child: CustomText(text: 'Log Out',color: Colors.red, font: FontWeight.w600,
+          ),
+
+          ),
+
+
+        ],
+      );
+    });
+  }
 
   /// AutoLogin
   Future<void>autoLogin()async{
@@ -413,7 +442,7 @@ class _ProfileViewState extends State<ProfileView> {
                   Gap(10),
                   Expanded(
                     child: GestureDetector(
-                      onTap: logOut,
+                      onTap: showLogOutConfirmation,
                       child:CustomButton(
                         text: 'Log Out',textColor:AppColors.primaryColor,color: Colors.white,radius: 5,),
                     ),
@@ -499,3 +528,5 @@ class _ProfileViewState extends State<ProfileView> {
     }
   }
 }
+
+

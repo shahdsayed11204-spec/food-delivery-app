@@ -21,9 +21,9 @@ class DioClient {
          onRequest: (options,handler)
          async{
            final token=await PrefHelper.getToken();
-           print('TOKEN = $token');
-           print('URL = ${options.path}');
-           print('HEADERS = ${options.headers}');
+           // print('TOKEN = $token');
+           // print('URL = ${options.path}');
+           // print('HEADERS = ${options.headers}');
            if(token !=null && token.isNotEmpty&&token!='guest'){
              options.headers['Authorization']='Bearer $token';
            }

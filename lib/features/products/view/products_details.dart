@@ -1,19 +1,21 @@
+import 'package:Hungry_App/features/cart/data/models/cart_models.dart';
+import 'package:Hungry_App/features/cart/data/repi/cart_repi.dart';
 import 'package:Hungry_App/shared/custom_text/coustom_taxt.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-
 import '../../../core/constants/api_colors.dart';
-import '../../../shared/custom_text/custom_bottom_cart.dart';
-import '../../../shared/navigator/navigatorTo.dart';
-import '../../cart/views/cart_view.dart';
+import '../../../core/network/api_error.dart';
+import '../../../shared/custom_text/custom_bottom.dart';
 import '../../home/data/models/toppings_model.dart';
 import '../../home/data/repi/product_repi.dart';
 import '../widgets/slider_spaicy.dart';
 import '../widgets/toppings_card.dart';
 
 class ProductsDetails extends StatefulWidget {
-  const ProductsDetails({super.key, required this.imagePath});
+  const ProductsDetails({super.key, required this.imagePath, required this.productId});
   final String imagePath;
+  final int productId;
   @override
   State<ProductsDetails> createState() => _ProductsDetailsState();
 }
@@ -21,12 +23,14 @@ class ProductsDetails extends StatefulWidget {
 class _ProductsDetailsState extends State<ProductsDetails> {
   late double value = 0.5;
 
-  int? selectedToppingIndex;
-  int? selectedOptionIndex;
+ List<int> selectedOptionIndex=[];
+  List<int> selectedToppingIndex=[];
 
+/// Get Toppings
   ProductRepo productRepo = ProductRepo();
-  List<ToppingsModel>? toppings;
+
   List<ToppingsModel>? options;
+  List<ToppingsModel>? toppings;
 
   Future<void> getToppings() async {
     final response = await productRepo.getToppings();
@@ -41,6 +45,11 @@ class _ProductsDetailsState extends State<ProductsDetails> {
       options = response;
     });
   }
+  /// Add To Cart
+  CartRepo cartRepo=CartRepo();
+   bool isLoading=false;
+   bool isAddedToCart = false;
+
 
   @override
   void initState() {
@@ -82,11 +91,16 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: List.generate(toppings?.length ?? 5, (index) {
-                    final isSelected = selectedToppingIndex == index;
                     final topping = toppings?[index];
+                    final id = topping?.id ?? 1;
+                    if (topping ==null){
+                      return CupertinoActivityIndicator();
+                    }
+                    final isSelected = selectedToppingIndex.contains(id);
                     return Padding(
                       padding: const EdgeInsets.only(right: 12.0),
                       child: ToppingCard(
+
                         color: isSelected
                             ? AppColors.primaryColor.withOpacity(0.5)
                             : AppColors.primaryColor.withOpacity(0.05),
@@ -94,7 +108,11 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                         imagePath: topping?.image ?? '',
                         onAdd: () {
                           setState(() {
-                            selectedToppingIndex = index;
+                           if(isSelected){
+                             selectedToppingIndex.remove(id);
+                           }else{
+                             selectedToppingIndex.add(id);
+                           }
                           });
                         },
                       ),
@@ -110,8 +128,13 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: List.generate(options?.length ?? 5, (index) {
-                    final isSelected = selectedOptionIndex == index;
+
                     final option = options?[index];
+                    final id = option?.id ?? 1;
+                    if (option ==null){
+                      return CupertinoActivityIndicator();
+                    }
+                    final isSelected = selectedOptionIndex.contains(id);
                     return Padding(
                       padding: const EdgeInsets.only(right: 12.0),
                       child: ToppingCard(
@@ -122,7 +145,11 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                         imagePath: option?.image ?? '',
                         onAdd: () {
                           setState(() {
-                            selectedOptionIndex = index;
+                          if(isSelected){
+                            selectedOptionIndex.remove(id);
+                          }else{
+                            selectedOptionIndex.add(id);
+                          }
                           });
                         },
                       ),
@@ -146,12 +173,62 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                       ),
                     ],
                   ),
-                  CustomBottomCart(
+                  CustomButton(
                     text: 'Add To Cart',
-                    onTap: () {
-                      navigatorTo(context, const CartView());
+                   widget:isLoading
+                       ? const CupertinoActivityIndicator(color: Colors.white,)
+                       : const Icon(Icons.shopping_cart,color: Colors.white,size: 20,),
+                    gap: 8,
+                    onTap: ()async {
+                      try {
+                        if (!mounted) return;
+                        setState(() => isLoading = true);
+                        final cartItem = CartModel(
+                          productId: widget.productId,
+                          qty: 1,
+                          spicy: value,
+                          toppings: selectedToppingIndex,
+                          options: selectedOptionIndex,
+                        );
+                        await cartRepo.addToCart(
+                          CartRequestModel(items: [cartItem]),
+                        );
+                        if (!mounted) return;
+                        setState(() {
+                          isLoading = false;
+                          isAddedToCart = true;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Added to cart successfully!',
+                            ),
+                          ),
+                        );
+                      } on ApiError catch (error) {
+                        if (!mounted) return;
+                        setState(() => isLoading = false);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(error.message),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } catch (e) {
+                        if (!mounted) return;
+                        setState(() => isLoading = false);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Something went wrong. Please try again.',
+                            ),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                   ),
+
                 ],
               ),
               const Gap(20),
