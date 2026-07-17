@@ -29,7 +29,6 @@ I am currently seeking opportunities as a Junior Flutter Developer where I can c
 - Cubit / Bloc
 - REST API
 - Dio
-- Firebase
 - Shared Preferences
 - Git & GitHub
 - Clean Architecture

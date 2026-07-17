@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 import '../../../core/constants/api_colors.dart';
 import '../../../core/network/api_error.dart';
 import '../../../shared/custom_text/custom_snackbar.dart';
@@ -25,13 +24,15 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final List<String> categories = ['All', 'Sliders', 'Combos', 'Classic'];
   int selectedIndex = 0;
-
+  TextEditingController searchController = TextEditingController();
   List<ProductModel>? products;
+  List<ProductModel> ?allProducts;
   final ProductRepo productRepo = ProductRepo();
 
   Future<void> getProducts() async {
     final response = await productRepo.getProducts();
     setState(() {
+      allProducts=response;
       products = response;
     });
   }
@@ -71,7 +72,7 @@ class _HomeViewState extends State<HomeView> {
       child: Skeletonizer(
         enabled: products == null,
         child: Scaffold(
-          backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+          backgroundColor: Colors.grey[150],
           body: RefreshIndicator(
             color: AppColors.primaryColor,
             backgroundColor: Colors.white,
@@ -94,11 +95,19 @@ class _HomeViewState extends State<HomeView> {
                         children: [
                           const Gap(60),
                           UserHeader(
-                            userName: _userModel?.name ?? 'Doodah',
+                            userName: _userModel?.name ?? '',
                             userImage: _userModel?.image ?? '',
                           ),
                           const Gap(20),
-                          SearchHome(),
+                          SearchHome(
+                            searchController: searchController,
+                               onChanged:(value){
+                               final query = value.toLowerCase();
+                               setState(() {
+                                 products=allProducts?.where((p)=>p.name.toLowerCase().contains(query)).toList();
+                               });
+                               } ,
+                          ),
                         ],
                       ),
                     ),
@@ -121,7 +130,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
                 SliverPadding(
-                  padding: const EdgeInsets.only(left: 7, right: 7, bottom: 100, top: 15),
+                  padding: const EdgeInsets.only(left: 5, right: 5, bottom: 100, top: 10),
                   sliver: SliverGrid(
                     delegate: SliverChildBuilderDelegate(
                       childCount: products?.length,
